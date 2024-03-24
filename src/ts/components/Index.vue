@@ -74,9 +74,9 @@ const theme = useTheme()
 const {availableLocales, locale, t} = useI18n()
 const {mdAndUp, thresholds} = useDisplay()
 
-const desktopWidth = `${thresholds.value.md - 16}px`
+const desktopWidth = thresholds.value.md - 16
 const mobileWidth = '100%'
-const width = computed(() => mdAndUp.value ? desktopWidth : mobileWidth)
+const width = computed(() => mdAndUp.value ? `${desktopWidth}px` : mobileWidth)
 
 const titleHeight = 72
 const forecastHeight = 328
