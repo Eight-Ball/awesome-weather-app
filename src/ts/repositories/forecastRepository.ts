@@ -24,10 +24,12 @@ export type Position = {
   lat: number
 }
 
+const today = new Date('2024-01-02T12:00:00.000Z') // there is data from January 1st to 6th from this API
+
 export default {
   getAvailablePointsWithin100km(position: Position): Promise<ForecastResponse<PositionItem>> {
     const select = 'position'
-    const where = `${getPositionWithin1OOkmWhereClause(position)} AND ${getForecastTodayWhereClause()}`
+    const where = `${getPositionWithin1OOkmWhereClause(position)} AND ${getForecastWhereClause(today)}`
     return HttpClient.get(base, {
       params: {
         select,
@@ -38,7 +40,7 @@ export default {
 
   get5NextDays(position: Position): Promise<ForecastResponse<ForecastItem>> {
     const select = 'forecast, temperature'
-    const where = `${getPositionExactWhereClause(position)} AND (${getForecast5NextDaysWhereClause()})`
+    const where = `${getPositionExactWhereClause(position)} AND (${getForecastXNextDaysWhereClause(today, 5)})`
     const orderBy = 'forecast'
 
     return HttpClient.get(base, {
@@ -61,16 +63,20 @@ function getPositionExactWhereClause(position: Position): string {
   return `within_distance(position, geom'POINT(${position.lon} ${position.lat})', 1m)`
 }
 
-function getForecastTodayWhereClause(): string {
-  return `forecast = date'2024-01-02T12:00:00'`
+function getForecastWhereClause(date: Date): string {
+  return `forecast = date'${date.toISOString().slice(0, 10)}T12:00:00'`
 }
 
-function getForecast5NextDaysWhereClause(): string {
-  // I found data only up to January 6
-  return `forecast = date'2024-01-02T12:00:00' 
-  OR forecast = date'2024-01-03T12:00:00' 
-  OR forecast = date'2024-01-04T12:00:00' 
-  OR forecast = date'2024-01-05T12:00:00' 
-  OR forecast = date'2024-01-06T12:00:00'`
+function getForecastXNextDaysWhereClause(firstDate: Date, consecutiveDays: number): string {
+  const date = new Date(firstDate.getTime())
+  let whereClause = ''
+
+  for (let day = 0; day < consecutiveDays; day++) {
+    if (0!== day) whereClause += ' OR '
+    whereClause += getForecastWhereClause(date)
+    date.setDate(date.getDate() + 1)
+  }
+
+  return whereClause
 }
 
