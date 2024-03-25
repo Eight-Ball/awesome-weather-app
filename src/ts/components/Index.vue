@@ -8,12 +8,10 @@
       cover
       :height="cardHeight"
     >
-      <div
-        class="text-h4 pa-4"
-        :style="`height: ${titleHeight}px; opacity: 0.8`"
-      >
-        {{ place?.properties.label ?? 'The Awesome Weather App' }}
-      </div>
+      <Title
+        :height="titleHeight"
+        :label="place?.properties.label"
+      />
       <v-row
         class="ml-0"
         :style="`height: ${forecastHeight}px; width: ${width}`"
@@ -34,44 +32,21 @@
     </v-img>
   </v-card>
   <v-row class="mx-auto flex-grow-0">
-    <v-col>
-      <v-switch
-        v-model="dark"
-        class="mt-1 mr-4"
-        hide-details
-      >
-        <template #prepend>
-          {{ t(DARK) }}
-        </template>
-      </v-switch>
-    </v-col>
-    <v-col>
-      <div class="d-flex mt-5 pl-8">
-        |
-      </div>
-    </v-col>
-    <v-col>
-      <v-select
-        v-model="locale"
-        :items="availableLocales"
-        variant="plain"
-      />
-    </v-col>
+    <Footer />
   </v-row>
 </template>
 
 <script lang="ts" setup>
-import Search from '@/ts/components/Search.vue'
-import Forecast from '@/ts/components/Forecast.vue'
+import Search from '@/ts/components/Body/Search.vue'
+import Forecast from '@/ts/components/Body/Forecast.vue'
 import {computed, ref} from 'vue'
-import {VCard, VCol, VImg, VRow, VSelect, VSwitch} from 'vuetify/components'
+import {VCard, VCol, VImg, VRow} from 'vuetify/components'
 import {SearchItem} from '@/ts/repositories/geocoderRepository'
 import {useDisplay, useTheme} from 'vuetify'
-import {useI18n} from 'vue-i18n'
-import {DARK} from '@/lang/messages'
+import Title from '@/ts/components/Header/Title.vue'
+import Footer from '@/ts/components/Footer/Footer.vue'
 
 const theme = useTheme()
-const {availableLocales, locale, t} = useI18n()
 const {mdAndUp, thresholds} = useDisplay()
 
 const desktopWidth = thresholds.value.md - 16
@@ -85,8 +60,5 @@ const cardHeight = titleHeight + forecastHeight + searchHeight
 
 const place = ref<SearchItem | null>(null)
 
-const dark = computed({
-  get: () => theme.global.current.value.dark,
-  set: dark => theme.global.name.value = dark ? 'dark' : 'light'
-})
+const dark = computed(() => theme.global.current.value.dark)
 </script>
