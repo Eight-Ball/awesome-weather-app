@@ -54,12 +54,12 @@ export default {
 }
 
 function getPositionWithin1OOkmWhereClause(position: Position): string {
-  // 100km is larger than the Arpege model grid at the antipodes
+  // 100km is larger than the grid at the antipodes
   return `within_distance(position, geom'POINT(${position.lon} ${position.lat})', 100km)`
 }
 
 function getPositionExactWhereClause(position: Position): string {
-  // I haven't found how to query a point directly
+  // 1m is smaller than the grid on the Europe
   return `within_distance(position, geom'POINT(${position.lon} ${position.lat})', 1m)`
 }
 
