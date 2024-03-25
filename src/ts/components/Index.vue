@@ -1,7 +1,7 @@
 <template>
   <v-card
-    class="mx-auto mt-16"
-    :style="`width: ${width}`"
+    class="index root mx-auto mt-16"
+    :style="`width: ${width}; overflow: unset`"
   >
     <v-img
       :src="`/background-${dark ? 'dark' : 'light'}.jpg`"
@@ -62,3 +62,11 @@ const place = ref<SearchItem | null>(null)
 
 const dark = computed(() => theme.global.current.value.dark)
 </script>
+
+<style lang="scss" scoped>
+.index:deep {
+  .v-responsive {
+    overflow: unset;
+  }
+}
+</style>
