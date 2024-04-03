@@ -68,5 +68,8 @@ const dark = computed(() => theme.global.current.value.dark)
   .v-responsive {
     overflow: unset;
   }
+  .v-img__img {
+    border-radius: 4px;
+  }
 }
 </style>
