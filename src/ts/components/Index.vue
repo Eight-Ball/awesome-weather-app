@@ -55,7 +55,7 @@ const width = computed(() => mdAndUp.value ? `${desktopWidth}px` : mobileWidth)
 
 const titleHeight = 72
 const forecastHeight = 328
-const searchHeight = 40
+const searchHeight = 38
 const cardHeight = titleHeight + forecastHeight + searchHeight
 
 const place = ref<SearchItem | null>(null)
