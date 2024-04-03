@@ -31,15 +31,12 @@ const model = defineModel<SearchItem | null>()
 
 const places = ref<SearchItem[]>([])
 const focused = ref(false)
-const updating = ref(false)
 let lastFragment: string | null = ''
 
 async function search(fragment: string | null): Promise<void> {
   if (!focused.value // v-autocomplete set an empty string fragment on blur
-    || updating.value // already updating
     || ('' !== fragment && fragment === lastFragment) // prevent sending the same request
   ) {
-    updating.value = false
     return
   }
   lastFragment = fragment
@@ -54,6 +51,8 @@ async function search(fragment: string | null): Promise<void> {
 
 async function updateAlternatives(fragment: string) {
   const response = await geocoderRepository.get(fragment, locale.value)
+  if (fragment !== lastFragment) return // abort outdated updates
+
   places.value = response.data.features
 }
 
@@ -62,8 +61,7 @@ function selectFirstAlternative(): void {
 }
 
 function updateModel(id: string | null): void {
-  updating.value = true // prevent @update:search to refresh data again
-  if (null === id) model.value = null
+  if (null === id) reset()
   else model.value = getPlace(id) ?? null
 }
 
