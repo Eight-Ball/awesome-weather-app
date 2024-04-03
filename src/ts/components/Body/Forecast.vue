@@ -10,7 +10,7 @@
     <!-- Sparkline doesn't have top labels option -->
     <v-sparkline
       :line-width="0"
-      :model-value="forecast.map(f => f.temperature)"
+      :model-value="temperatures"
       :padding="24"
       label-size="10"
       class="mx-minus-3"
@@ -25,7 +25,7 @@
       :fill="false"
       :gradient="[theme.global.current.value.dark ? darkGraphColor : lightGraphColor]"
       :line-width="2"
-      :model-value="forecast.map(f => f.temperature)"
+      :model-value="temperatures"
       :padding="24"
       :smooth="true"
       auto-draw
@@ -53,7 +53,7 @@
 
 <script lang="ts" setup>
 import {SearchItem} from '@/ts/repositories/geocoderRepository'
-import {ref, toRefs, watch} from 'vue'
+import {computed, ref, toRefs, watch} from 'vue'
 import {VProgressLinear} from 'vuetify/components'
 import {VSparkline} from 'vuetify/labs/VSparkline'
 import forecastRepository, {ForecastItem, Position, PositionItem} from '@/ts/repositories/forecastRepository'
@@ -80,6 +80,7 @@ const {place} = toRefs(props)
 watch(place, update)
 
 const forecast = ref<{ date: Date, temperature: number }[]>([])
+const temperatures = computed(() => place.value ? forecast.value.map(f => f.temperature) : [])
 
 const loading = ref(false)
 const dataError = ref(false)
