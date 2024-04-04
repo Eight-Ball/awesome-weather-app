@@ -35,7 +35,7 @@ export type SearchItem = {
   bbox: number[]
 }
 
-const base = 'http://pelias.smappen.com:4000/v1/search'
+const base = 'http://pelias.smappen.com:4000/v1/autocomplete'
 
 export default {
   get(fragment: string, lang = 'en'): Promise<GeocoderResponse> {
